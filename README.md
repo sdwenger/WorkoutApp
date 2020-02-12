@@ -1,2 +1,2 @@
-# SullivanProjects
-Sullivan's general projects
+# WorkoutApp
+My app for tracking my workout routine.
