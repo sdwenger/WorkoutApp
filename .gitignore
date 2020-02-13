@@ -8,3 +8,5 @@ gradle*
 /captures
 .externalNativeBuild
 .cxx
+/app/*
+!/app/src
