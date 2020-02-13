@@ -31,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         final Context context = this;
 
-        SQLiteDatabase mydatabase = openOrCreateDatabase("Workouts", MODE_PRIVATE, null);
-        if (!AppWideResourceWrapper.sqlitedbIsSet()) {
+        SQLiteDatabase mydatabase;
+        if (AppWideResourceWrapper.sqlitedbIsSet()) {
+            mydatabase = AppWideResourceWrapper.getSqlitedb();
+        } else {
+            mydatabase = openOrCreateDatabase("Workouts", MODE_PRIVATE, null);
             AppWideResourceWrapper.setSqlitedb(mydatabase);
         }
         if (true) {

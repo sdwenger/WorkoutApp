@@ -26,7 +26,13 @@ public class HighLevelView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_level_view);
         Cursor c;
-        SQLiteDatabase mydatabase = AppWideResourceWrapper.getSqlitedb();
+        SQLiteDatabase mydatabase;
+        if (AppWideResourceWrapper.sqlitedbIsSet()) {
+            mydatabase = AppWideResourceWrapper.getSqlitedb();
+        } else {
+            mydatabase = openOrCreateDatabase("Workouts", MODE_PRIVATE, null);
+            AppWideResourceWrapper.setSqlitedb(mydatabase);
+        }
         ArrayList<String> data = new ArrayList<String>(28);
         final Context context = this;
         c = mydatabase.rawQuery("SELECT Day, Theme FROM DayThemes ORDER BY Day", null);
