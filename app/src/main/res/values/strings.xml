@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Workout</string>
+    <string name="title_activity_high_level_view">HighLevelView</string>
+</resources>
