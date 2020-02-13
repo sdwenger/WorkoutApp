@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 public class HighLevelView extends AppCompatActivity {
 
+    /*
     String creation = "CREATE TABLE IF NOT EXISTS DayThemes (Day INT, Theme VARCHAR(22))\n";
     String [] insertion = ("INSERT INTO DayThemes (Day, Theme) VALUES (1, 'Full Body')\n" +
             "INSERT INTO DayThemes (Day, Theme) VALUES (2, 'Rest')\n" +
@@ -50,20 +51,26 @@ public class HighLevelView extends AppCompatActivity {
             "INSERT INTO DayThemes (Day, Theme) VALUES (26, 'Back, Biceps &amp; Abs')\n" +
             "INSERT INTO DayThemes (Day, Theme) VALUES (27, 'Rest')\n" +
             "INSERT INTO DayThemes (Day, Theme) VALUES (28, 'Rest')").split("\n");
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Context context = this;
-        ArrayList<String> data = new ArrayList<String>(28);
         setContentView(R.layout.activity_high_level_view);
+        Cursor c;
         SQLiteDatabase mydatabase = openOrCreateDatabase("Workouts",MODE_PRIVATE,null);
+        ArrayList<String> data = new ArrayList<String>(28);
+        final Context context = this;
+        /*
         mydatabase.execSQL(creation);
-        Cursor c = mydatabase.rawQuery("SELECT Day, Theme FROM DayThemes ORDER BY Day", null);
+        c = mydatabase.rawQuery("SELECT Day, Theme FROM DayThemes ORDER BY Day", null);
         if (!c.moveToFirst()) {
             for (String s: insertion) {mydatabase.execSQL(s);}
             c = mydatabase.rawQuery("SELECT Day, Theme FROM DayThemes ORDER BY Day", null);
         }
+        /*/
+        c = mydatabase.rawQuery("SELECT Day, Theme FROM DayThemes ORDER BY Day", null);
+        // */
         if (c.moveToFirst()) {
             do {
                 data.add(c.getString(c.getColumnIndex("Day")) + ". " + c.getString(c.getColumnIndex("Theme")));
