@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -12,6 +13,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,10 +29,41 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final Context context = this;
+
+        SQLiteDatabase mydatabase = openOrCreateDatabase("Workouts", MODE_PRIVATE, null);
+        if (!AppWideResourceWrapper.sqlitedbIsSet()) {
+            AppWideResourceWrapper.setSqlitedb(mydatabase);
+        }
+        if (true) {
+            InputStream sqlStream = null;
+            BufferedReader sqlReader = null;
+            StringWriter writer = null;
+            try {
+                sqlStream = context.getResources().openRawResource(R.raw.workouts);
+                sqlReader = new BufferedReader(new InputStreamReader(sqlStream, "UTF-8"));
+                writer = new StringWriter();
+                char[] buffer = new char[2048];
+                int n;
+                while ((n = sqlReader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
+                }
+                String rawSql = writer.toString();
+                String[] dbSetup = rawSql.split("\n");
+                for (String s: dbSetup) {
+                    mydatabase.execSQL(s);
+                }
+                sqlStream.close();
+                sqlReader.close();
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+            }
+        }
 
         final EditText edittext = (EditText) findViewById(R.id.myNumber);
         edittext.setOnKeyListener(new NumberEnterListener(this));
-        final Context context = this;
 
         final Button highLevelView = (Button) findViewById(R.id.jumpToHighLevel);
         highLevelView.setOnClickListener(new View.OnClickListener() {public void onClick(View v) { Intent intent = new Intent(context, HighLevelView.class); startActivity(intent); }});
