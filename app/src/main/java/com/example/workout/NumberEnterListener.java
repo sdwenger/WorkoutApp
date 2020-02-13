@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class NumberEnterListener implements View.OnKeyListener {
 
     AppCompatActivity mainActivity;
-    //*
+    /*
     String tableCreate = "CREATE TABLE IF NOT EXISTS Strength (Day INT, Title VARCHAR(40), Sets INT, RepString VARCHAR(20))\n";
     String []dataInsert = ("INSERT INTO Strength(Day, Title, Sets, RepString) VALUES (1,'Dumbbell Bench Press',3,'8,10,12')\n" +
             "INSERT INTO Strength(Day, Title, Sets, RepString) VALUES (1,'Lat Pulldown',3,'8,10,12')\n" +
@@ -149,26 +149,12 @@ public class NumberEnterListener implements View.OnKeyListener {
         EditText self = (EditText) mainActivity.findViewById(R.id.myNumber);
         String [] empty = new String[]{};
         if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-            /*
-            SQLiteDatabase mydatabase = mainActivity.openOrCreateDatabase("Workouts",mainActivity.MODE_PRIVATE,null);
-            mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Strength (Day INT, Title VARCHAR(40), Sets INT, RepString VARCHAR(20))");
-            Cursor c = mydatabase.rawQuery("SELECT Title, Sets, RepString FROM Strength", new String[]{});
-            if (!c.moveToFirst()) {
-                String[] dataLoad = dataInsert.split("\n");
-                if (dataLoad.length > 5 && dataLoad.length < 1000) {
-                    for (String s: dataLoad) {mydatabase.execSQL(s);}
-                    ((MainActivity)mainActivity).setGridView(new String[]{"Success"});
-                } else {
-                    ((MainActivity)mainActivity).setGridView(new String[]{(new Integer(dataLoad.length)).toString()});
-                }
-            } else {
-                ((MainActivity)mainActivity).setGridView(new String[]{"???"});
-            }
-            /*/
             ArrayList<String> tables = new ArrayList<String>();
             SQLiteDatabase mydatabase = mainActivity.openOrCreateDatabase("Workouts", mainActivity.MODE_PRIVATE, null);
+            Cursor c;
+            /*
             mydatabase.execSQL(tableCreate);
-            Cursor c = mydatabase.rawQuery("SELECT Title, Sets, RepString FROM Strength", new String[]{});
+            c = mydatabase.rawQuery("SELECT Title, Sets, RepString FROM Strength", new String[]{});
             if (!c.moveToFirst()) {
                 if (dataInsert.length > 5 && dataInsert.length < 1000) {
                     for (String s: dataInsert) {mydatabase.execSQL(s);}
@@ -177,6 +163,7 @@ public class NumberEnterListener implements View.OnKeyListener {
                     ((MainActivity)mainActivity).setGridView(new String[]{(new Integer(dataInsert.length)).toString()});
                 }
             }
+            //*/
             String dayString = self.getText().toString();
             Integer rawNumber = Integer.parseInt(dayString);
             Integer dayNumber = reduce(rawNumber);
@@ -199,8 +186,6 @@ public class NumberEnterListener implements View.OnKeyListener {
             }
             ((MainActivity) mainActivity).setGridView(tables);
             ((MainActivity) mainActivity).hideKeyboard(mainActivity);
-
-            // */
             return true;
         }
         else {
