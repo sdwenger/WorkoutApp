@@ -72,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
         final EditText edittext = (EditText) findViewById(R.id.myNumber);
         edittext.setOnKeyListener(dayNumberListener);
 
+        int startDay = getIntent().getIntExtra("CLICKED_DAY", -1);
+        if (startDay == -1) {
+            setGridView(initialList, new Integer[0]);
+        } else {
+            edittext.setText(Integer.toString(startDay));
+            dayNumberListener.onKey(findViewById(R.id.content), KeyEvent.KEYCODE_ENTER, (new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER)));
+        }
+
         final Button highLevelView = (Button) findViewById(R.id.jumpToHighLevel);
         highLevelView.setOnClickListener(new View.OnClickListener() {public void onClick(View v) { Intent intent = new Intent(context, HighLevelView.class); startActivity(intent); }});
 
@@ -93,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
                 ((MainActivity)context).incrementEditText(edittext, 1, 1);
             }
         });
-
-        setGridView(initialList, new Integer[0]);
     }
 
     protected void setGridView(String[] workoutList, final Integer[] rowIds) {
