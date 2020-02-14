@@ -4,7 +4,9 @@ import android.view.View;
 import android.widget.Button;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class SaveButtonClickListener implements View.OnClickListener {
     Map<Integer, Integer> updates = new HashMap<Integer, Integer>();
@@ -22,8 +24,10 @@ public class SaveButtonClickListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        for (Integer id: updates.keySet()) {
-            Integer weight = updates.remove(id);
+        Set<Integer> ids = new HashSet<Integer>();
+        ids.addAll(updates.keySet());
+        for (Integer id: ids) {
+            Integer weight = updates.get(id);
             AppWideResourceWrapper.getSqlitedb().execSQL("UPDATE Strength SET Weight=? WHERE rowid=?", new Object[]{weight, id});
         }
         saveButton.setVisibility(View.INVISIBLE);
