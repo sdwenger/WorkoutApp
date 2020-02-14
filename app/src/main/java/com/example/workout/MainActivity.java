@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Context context = this;
+        final NumberEnterListener dayNumberListener = new NumberEnterListener(this, NumberEnterListener.NumberContext.DAYNUMBER);
 
         SQLiteDatabase mydatabase;
         if (AppWideResourceWrapper.sqlitedbIsSet()) {
@@ -67,14 +70,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final EditText edittext = (EditText) findViewById(R.id.myNumber);
-        edittext.setOnKeyListener(new NumberEnterListener(this, NumberEnterListener.NumberContext.DAYNUMBER));
+        edittext.setOnKeyListener(dayNumberListener);
 
         final Button highLevelView = (Button) findViewById(R.id.jumpToHighLevel);
         highLevelView.setOnClickListener(new View.OnClickListener() {public void onClick(View v) { Intent intent = new Intent(context, HighLevelView.class); startActivity(intent); }});
 
         final Button saveChanges = (Button) findViewById(R.id.saveChanges);
-        saveListener = new SaveButtonClickListener(saveChanges);
-        saveChanges.setOnClickListener(saveListener);
+        saveChanges.setOnClickListener(new SaveButtonClickListener(saveChanges));
+
+        Button prevDay = findViewById(R.id.prevDay);
+        prevDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)context).incrementEditText(edittext, -1, 28);
+            }
+        });
+
+        Button nextDay = findViewById(R.id.nextDay);
+        nextDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)context).incrementEditText(edittext, 1, 1);
+            }
+        });
 
         setGridView(initialList, new Integer[0]);
     }
@@ -116,6 +134,21 @@ public class MainActivity extends AppCompatActivity {
 
     protected void setGridView(ArrayList<String> workoutList, ArrayList<Integer> rowIds) {
         setGridView(toStringArray(workoutList), toIntegerArray(rowIds));
+    }
+
+    public void incrementEditText(EditText target, int incValue, int initializeIfEmpty) {
+        String prior = target.getText().toString();
+        int after;
+        if (prior.isEmpty()) {
+            after = initializeIfEmpty;
+        } else {
+            int before;
+            before = Integer.parseInt(prior);
+            after = before + incValue;
+        }
+        target.setText(Integer.toString(after));
+        BaseInputConnection inputConnection = new BaseInputConnection(target, true);
+        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
     }
 
     public static void hideKeyboard(Activity activity) {
