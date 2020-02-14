@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -47,6 +48,14 @@ public class HighLevelView extends AppCompatActivity {
 
         GridView gridView = (GridView) findViewById(R.id.themeGrid);
         gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("CLICKED_DAY", position+1);
+                startActivity(intent);
+            }
+        });
         final Button highLevelView = (Button) findViewById(R.id.jumpToDetails);
         highLevelView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
