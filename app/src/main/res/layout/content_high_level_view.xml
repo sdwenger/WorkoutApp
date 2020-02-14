@@ -14,10 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="244dp"
         android:layout_marginTop="16dp"
-        android:text="View Details"
-        app:layout_constraintBottom_toBottomOf="@+id/workoutGrid"
+        android:text="@string/button_view_details"
+        app:layout_constraintBottom_toBottomOf="@+id/themeGrid"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.481" />

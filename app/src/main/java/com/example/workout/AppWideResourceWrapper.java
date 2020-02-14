@@ -1,5 +1,6 @@
 package com.example.workout;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import java.util.ListIterator;
 
 public class AppWideResourceWrapper {
     private static SQLiteDatabase sqlitedb = null;
+    private static Context globalContext = null;
 
     public static SQLiteDatabase getSqlitedb() {
         return sqlitedb;
@@ -26,18 +28,16 @@ public class AppWideResourceWrapper {
         return (sqlitedb != null);
     }
 
-    public static void assertTrue(boolean flag) {
-        assertTrue(flag, "Assertion failed");
+    public static Context getGlobalContext() {
+        return globalContext;
     }
 
-    public static void assertTrue(boolean flag, Object message) {
-        assertTrue(flag, message.toString());
+    public static void setGlobalContext(Context globalContext) {
+        AppWideResourceWrapper.globalContext = globalContext;
     }
 
-    public static void assertTrue(boolean flag, String message) {
-        if (!flag) {
-            throw new AssertionError(message);
-        }
+    public static boolean globalContextIsSet() {
+        return globalContext!=null;
     }
 }
 

@@ -31,15 +31,15 @@ public class HighLevelView extends AppCompatActivity {
         if (AppWideResourceWrapper.sqlitedbIsSet()) {
             mydatabase = AppWideResourceWrapper.getSqlitedb();
         } else {
-            mydatabase = openOrCreateDatabase("Workouts", MODE_PRIVATE, null);
+            mydatabase = openOrCreateDatabase(getString(R.string.table_workout), MODE_PRIVATE, null);
             AppWideResourceWrapper.setSqlitedb(mydatabase);
         }
         ArrayList<String> data = new ArrayList<String>(28);
         final Context context = this;
-        c = mydatabase.rawQuery("SELECT Day, Theme FROM DayThemes ORDER BY Day", null);
+        c = mydatabase.rawQuery(getString(R.string.dayThemeQuery), null);
         if (c.moveToFirst()) {
             do {
-                data.add(c.getString(c.getColumnIndex("Day")) + ". " + c.getString(c.getColumnIndex("Theme")));
+                data.add(c.getString(c.getColumnIndex(getString(R.string.header_day))) + getString(R.string.dotspace) + c.getString(c.getColumnIndex(getString(R.string.header_theme))));
             } while (c.moveToNext());
         }
 
@@ -52,7 +52,7 @@ public class HighLevelView extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra("CLICKED_DAY", position+1);
+                intent.putExtra(getString(R.string.clickedDayExtra), position+1);
                 startActivity(intent);
             }
         });
