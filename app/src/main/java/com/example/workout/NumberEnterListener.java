@@ -30,7 +30,7 @@ public class NumberEnterListener implements View.OnKeyListener {
             if (rawNumber != dayNumber) {
                 self.setText(dayNumber.toString());
             }
-            c = mydatabase.rawQuery("SELECT Title, Sets, RepString FROM Strength WHERE Day=?", new String[]{dayNumber.toString()});
+            c = mydatabase.rawQuery("SELECT Title, Sets, RepString, Weight FROM Strength WHERE Day=? ORDER BY Sequence", new String[]{dayNumber.toString()});
             if (c.moveToFirst()) {
                 for (String s : MainActivity.initialList) {
                     tables.add(s);
@@ -39,6 +39,11 @@ public class NumberEnterListener implements View.OnKeyListener {
                     tables.add(c.getString(c.getColumnIndex("Title")));
                     tables.add(c.getString(c.getColumnIndex("Sets")));
                     tables.add(c.getString(c.getColumnIndex("RepString")));
+                    String weight = c.getString(c.getColumnIndex("Weight"));
+                    if (weight == null) {
+                        weight = "0";
+                    }
+                    tables.add(weight);
                     c.moveToNext();
                 }
             } else {

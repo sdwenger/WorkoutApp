@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,10 +21,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    static String [] initialList = {"Title","Sets","Reps"};
+    static String [] initialList = {"Title","Sets","Reps","Weight"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,19 +77,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void setGridView(String[] workoutList) {
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.listitem, workoutList);
+        /*ArrayAdapter adapter = new ArrayAdapter<String>(this,
+                R.layout.listitem, workoutList) {
+            public View getView(int position, View convertView, ViewGroup parent) {
+                return convertView;
+            }
+        };*/
+        TableAdapter adapter = new TableAdapter();
 
         GridView gridView = (GridView) findViewById(R.id.workoutGrid);
         gridView.setAdapter(adapter);
     }
 
     protected void setGridView(ArrayList<String> workoutList) {
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.listitem, workoutList);
-
-        GridView gridView = (GridView) findViewById(R.id.workoutGrid);
-        gridView.setAdapter(adapter);
+        setGridView(toArray(workoutList));
     }
 
     public static void hideKeyboard(Activity activity) {
@@ -99,5 +102,13 @@ public class MainActivity extends AppCompatActivity {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static String[] toArray(List<String> list) {
+        String [] result = new String [list.size()];
+        for (int i = 0; i < list.size(); i ++) {
+            result[i] = list.get(i);
+        }
+        return result;
     }
 }

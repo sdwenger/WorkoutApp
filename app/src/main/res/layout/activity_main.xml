@@ -22,7 +22,7 @@
         android:id="@+id/workoutGrid"
         android:layout_width="414dp"
         android:layout_height="wrap_content"
-        android:numColumns="3"
+        android:numColumns="4"
         android:columnWidth="@android:dimen/thumbnail_width"
         android:stretchMode="columnWidth"
         android:verticalSpacing="20dp"
