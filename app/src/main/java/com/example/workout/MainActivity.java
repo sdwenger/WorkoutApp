@@ -8,9 +8,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -26,6 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     static String [] initialList = {"Title","Sets","Reps","Weight"};
+    SaveButtonClickListener saveListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             mydatabase = openOrCreateDatabase("Workouts", MODE_PRIVATE, null);
             AppWideResourceWrapper.setSqlitedb(mydatabase);
         }
-        if (true) {
+        if (false) {
             InputStream sqlStream = null;
             BufferedReader sqlReader = null;
             StringWriter writer = null;
@@ -68,15 +67,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final EditText edittext = (EditText) findViewById(R.id.myNumber);
-        edittext.setOnKeyListener(new NumberEnterListener(this));
+        edittext.setOnKeyListener(new NumberEnterListener(this, NumberEnterListener.NumberContext.DAYNUMBER));
 
         final Button highLevelView = (Button) findViewById(R.id.jumpToHighLevel);
         highLevelView.setOnClickListener(new View.OnClickListener() {public void onClick(View v) { Intent intent = new Intent(context, HighLevelView.class); startActivity(intent); }});
 
-        setGridView(initialList);
+        final Button saveChanges = (Button) findViewById(R.id.saveChanges);
+        saveListener = new SaveButtonClickListener(saveChanges);
+        saveChanges.setOnClickListener(saveListener);
+
+        setGridView(initialList, new Integer[0]);
     }
 
-    protected void setGridView(String[] workoutList) {
+    protected void setGridView(String[] workoutList, final Integer[] rowIds) {
         final int numberOfCells = workoutList.length;
 
         Rule<Integer> layouts = new Rule<Integer>() {
@@ -90,14 +93,29 @@ public class MainActivity extends AppCompatActivity {
                 return numberOfCells;
             }
         };
-        TableAdapter adapter = new TableAdapter(new CustomList<Integer>(layouts), new CustomList<String>(workoutList), this);
+        Rule<Integer> rowIdRule = new Rule<Integer>() {
+            @Override
+            public Integer getIndex(int position) {
+                if (position < 4) {
+                    return 0;
+                }
+                int rowNumber = (position/4)-1;
+                return rowIds[rowNumber];
+            }
+
+            @Override
+            public int getSize() {
+                return numberOfCells;
+            }
+        };
+        TableAdapter adapter = new TableAdapter(new CustomList<Integer>(layouts), new CustomList<String>(workoutList), new CustomList<Integer>(rowIdRule), this);
 
         GridView gridView = (GridView) findViewById(R.id.workoutGrid);
         gridView.setAdapter(adapter);
     }
 
-    protected void setGridView(ArrayList<String> workoutList) {
-        setGridView(toArray(workoutList));
+    protected void setGridView(ArrayList<String> workoutList, ArrayList<Integer> rowIds) {
+        setGridView(toStringArray(workoutList), toIntegerArray(rowIds));
     }
 
     public static void hideKeyboard(Activity activity) {
@@ -111,8 +129,16 @@ public class MainActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public static String[] toArray(List<String> list) {
+    public static String[] toStringArray(List<String> list) {
         String [] result = new String [list.size()];
+        for (int i = 0; i < list.size(); i ++) {
+            result[i] = list.get(i);
+        }
+        return result;
+    }
+
+    public static Integer[] toIntegerArray(List<Integer> list) {
+        Integer [] result = new Integer [list.size()];
         for (int i = 0; i < list.size(); i ++) {
             result[i] = list.get(i);
         }

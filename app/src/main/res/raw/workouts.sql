@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS DayThemes;
 DROP TABLE IF EXISTS Strength;
-CREATE TABLE IF NOT EXISTS DayThemes (Day INT, Theme VARCHAR(22));
+CREATE TABLE IF NOT EXISTS DayThemes (Id INT PRIMARY KEY, Day INT, Theme VARCHAR(22));
 INSERT INTO DayThemes (Day, Theme) VALUES (1, 'Full Body');
 INSERT INTO DayThemes (Day, Theme) VALUES (2, 'Rest');
 INSERT INTO DayThemes (Day, Theme) VALUES (3, 'Full Body');
@@ -29,7 +29,7 @@ INSERT INTO DayThemes (Day, Theme) VALUES (25, 'Shoulders &amp; Calves');
 INSERT INTO DayThemes (Day, Theme) VALUES (26, 'Back, Biceps &amp; Abs');
 INSERT INTO DayThemes (Day, Theme) VALUES (27, 'Rest');
 INSERT INTO DayThemes (Day, Theme) VALUES (28, 'Rest');
-CREATE TABLE IF NOT EXISTS Strength (Day INT, Sequence INT, Title VARCHAR(40), Sets INT, RepString VARCHAR(20), Weight INT);
+CREATE TABLE IF NOT EXISTS Strength (Id INT PRIMARY KEY, Day INT, Sequence INT, Title VARCHAR(40), Sets INT, RepString VARCHAR(20), Weight INT);
 INSERT INTO Strength(Day, Sequence, Title, Sets, RepString) VALUES (1, 1, 'Dumbbell Bench Press', 3, '8,10,12')
 INSERT INTO Strength(Day, Sequence, Title, Sets, RepString) VALUES (1, 2, 'Lat Pulldown', 3, '8,10,12')
 INSERT INTO Strength(Day, Sequence, Title, Sets, RepString) VALUES (1, 3, 'Overhead Dumbbell Press', 3, '8,10,12')

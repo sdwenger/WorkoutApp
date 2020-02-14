@@ -1,6 +1,5 @@
 package com.example.workout;
 
-import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,13 +18,13 @@ public class TableAdapter implements ListAdapter {
 
     private TableItem[] cells;
     private Set<DataSetObserver> observers;
-    private Context context;
+    private AppCompatActivity context;
 
-    public TableAdapter(List<Integer> layouts, List<String> contents, Context context) {
+    public TableAdapter(List<Integer> layouts, List<String> contents, List<Integer> rowIds, AppCompatActivity context) {
         int length = Math.min(layouts.size(), contents.size());
         cells = new TableItem[length];
         for (int i = 0; i < length; i ++) {
-            cells[i] = new TableItem(layouts.get(i), contents.get(i));
+            cells[i] = new TableItem(layouts.get(i), contents.get(i), rowIds.get(i));
         }
         observers = new HashSet<>();
         this.context = context;
@@ -89,6 +90,9 @@ public class TableAdapter implements ListAdapter {
                 case R.layout.listitementernumber:
                     EditText editor = convertView.findViewById(R.id.enteredNumber);
                     editor.setText(item.data);
+                    editor.setOnKeyListener(new NumberEnterListener(context, NumberEnterListener.NumberContext.WEIGHTEDIT));
+                    TextView rowIdAccess = convertView.findViewById(R.id.rowId);
+                    rowIdAccess.setText(Integer.toString(item.rowId));
                     break;
             }
         }
@@ -114,9 +118,11 @@ public class TableAdapter implements ListAdapter {
 class TableItem {
     int layout;
     String data;
+    int rowId;
 
-    public TableItem(int layout, String data) {
+    public TableItem(int layout, String data, int rowId) {
         this.layout = layout;
         this.data = data;
+        this.rowId = rowId;
     }
 }

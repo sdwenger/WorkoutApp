@@ -25,6 +25,20 @@ public class AppWideResourceWrapper {
     public static boolean sqlitedbIsSet() {
         return (sqlitedb != null);
     }
+
+    public static void assertTrue(boolean flag) {
+        assertTrue(flag, "Assertion failed");
+    }
+
+    public static void assertTrue(boolean flag, Object message) {
+        assertTrue(flag, message.toString());
+    }
+
+    public static void assertTrue(boolean flag, String message) {
+        if (!flag) {
+            throw new AssertionError(message);
+        }
+    }
 }
 
 class CustomList<T> implements List<T> {
