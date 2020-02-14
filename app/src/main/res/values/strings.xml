@@ -1,4 +1,27 @@
 <resources>
     <string name="app_name">Workout</string>
     <string name="title_activity_high_level_view">HighLevelView</string>
+    <string name="header_title">Title</string>
+    <string name="header_sets">Sets</string>
+    <string name="header_reps">Reps</string>
+    <string name="header_repstring">RepString</string>
+    <string name="header_weight">Weight</string>
+    <string name="header_rowid">rowid</string>
+    <string name="header_day">Day</string>
+    <string name="header_theme">Theme</string>
+    <string name="charSetUTF8">UTF-8</string>
+    <string name="clickedDayExtra">CLICKED_DAY</string>
+    <string name="table_workout">Workout</string>
+    <string name="rest">Rest day</string>
+    <string name="newline">\n</string>
+    <string name="zero">0</string>
+    <string name="dotspace">. </string>
+    <string name="lt">&lt;</string>
+    <string name="gt">&gt;</string>
+    <string name="strenghQueryByDay">SELECT rowid, Title, Sets, RepString, Weight FROM Strength WHERE Day=? ORDER BY Sequence</string>
+    <string name="dayThemeQuery">SELECT Day, Theme FROM DayThemes ORDER BY Day</string>
+    <string name="updateWeightQuery">UPDATE Strength SET Weight=? WHERE rowid=?</string>
+    <string name="button_view_details">View Details</string>
+    <string name="button_view_all">All</string>
+    <string name="button_save">Save Changes</string>
 </resources>

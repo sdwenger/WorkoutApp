@@ -39,7 +39,7 @@
         android:layout_height="29dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
-        android:text="All"
+        android:text="@string/button_view_all"
         android:textSize="8sp"
         app:layout_constraintEnd_toStartOf="@+id/myNumber"
         app:layout_constraintHorizontal_bias="0.148"
@@ -50,7 +50,7 @@
         android:id="@+id/saveChanges"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save Changes"
+        android:text="@string/button_save"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +64,7 @@
         android:layout_width="49dp"
         android:layout_height="41dp"
         android:layout_marginBottom="8dp"
-        android:text="&lt;"
+        android:text="@string/lt"
         app:layout_constraintBottom_toBottomOf="@+id/myNumber"
         app:layout_constraintEnd_toStartOf="@+id/myNumber" />
 
@@ -73,7 +73,7 @@
         android:layout_width="45dp"
         android:layout_height="41dp"
         android:layout_marginBottom="8dp"
-        android:text="&gt;"
+        android:text="@string/gt"
         app:layout_constraintBottom_toBottomOf="@+id/myNumber"
         app:layout_constraintStart_toEndOf="@+id/myNumber" />
 

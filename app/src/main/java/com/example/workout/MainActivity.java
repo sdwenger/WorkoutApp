@@ -25,7 +25,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    static String [] initialList = {"Title","Sets","Reps","Weight"};
+    static String [] initialList = {
+            staticGetString(R.string.header_title),
+            staticGetString(R.string.header_sets),
+            staticGetString(R.string.header_reps),
+            staticGetString(R.string.header_weight)
+    };
     SaveButtonClickListener saveListener;
 
     @Override
@@ -39,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         if (AppWideResourceWrapper.sqlitedbIsSet()) {
             mydatabase = AppWideResourceWrapper.getSqlitedb();
         } else {
-            mydatabase = openOrCreateDatabase("Workouts", MODE_PRIVATE, null);
+            mydatabase = openOrCreateDatabase(getString(R.string.table_workout), MODE_PRIVATE, null);
             AppWideResourceWrapper.setSqlitedb(mydatabase);
         }
         if (false) {
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             StringWriter writer = null;
             try {
                 sqlStream = context.getResources().openRawResource(R.raw.workouts);
-                sqlReader = new BufferedReader(new InputStreamReader(sqlStream, "UTF-8"));
+                sqlReader = new BufferedReader(new InputStreamReader(sqlStream, getString(R.string.charSetUTF8)));
                 writer = new StringWriter();
                 char[] buffer = new char[2048];
                 int n;
@@ -56,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     writer.write(buffer, 0, n);
                 }
                 String rawSql = writer.toString();
-                String[] dbSetup = rawSql.split("\n");
+                String[] dbSetup = rawSql.split(getString(R.string.newline));
                 for (String s: dbSetup) {
                     mydatabase.execSQL(s);
                 }
@@ -72,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText edittext = (EditText) findViewById(R.id.myNumber);
         edittext.setOnKeyListener(dayNumberListener);
 
-        int startDay = getIntent().getIntExtra("CLICKED_DAY", -1);
+        int startDay = getIntent().getIntExtra(getString(R.string.clickedDayExtra), -1);
         if (startDay == -1) {
             setGridView(initialList, new Integer[0]);
         } else {
@@ -84,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
         highLevelView.setOnClickListener(new View.OnClickListener() {public void onClick(View v) { Intent intent = new Intent(context, HighLevelView.class); startActivity(intent); }});
 
         final Button saveChanges = (Button) findViewById(R.id.saveChanges);
-        saveChanges.setOnClickListener(new SaveButtonClickListener(saveChanges));
+        saveListener = new SaveButtonClickListener(saveChanges);
+        saveChanges.setOnClickListener(saveListener);
 
         Button prevDay = findViewById(R.id.prevDay);
         prevDay.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
                 ((MainActivity)context).incrementEditText(edittext, 1, 1);
             }
         });
+    }
+
+    public static String staticGetString(int locator) {
+        return AppWideResourceWrapper.getGlobalContext().getString(locator);
     }
 
     protected void setGridView(String[] workoutList, final Integer[] rowIds) {

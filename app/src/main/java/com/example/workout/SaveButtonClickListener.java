@@ -28,7 +28,7 @@ public class SaveButtonClickListener implements View.OnClickListener {
         ids.addAll(updates.keySet());
         for (Integer id: ids) {
             Integer weight = updates.get(id);
-            AppWideResourceWrapper.getSqlitedb().execSQL("UPDATE Strength SET Weight=? WHERE rowid=?", new Object[]{weight, id});
+            AppWideResourceWrapper.getSqlitedb().execSQL(AppWideResourceWrapper.getGlobalContext().getString(R.string.updateWeightQuery), new Object[]{weight, id});
         }
         saveButton.setVisibility(View.INVISIBLE);
     }

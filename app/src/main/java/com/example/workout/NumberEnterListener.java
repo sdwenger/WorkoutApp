@@ -42,8 +42,6 @@ public class NumberEnterListener implements View.OnKeyListener {
             View parentView = (ViewGroup) v.getParent();
             EditText editor = parentView.findViewById(R.id.enteredNumber);
             TextView rowIdAccess = parentView.findViewById(R.id.rowId);
-            AppWideResourceWrapper.assertTrue(editor!=null);
-            AppWideResourceWrapper.assertTrue(rowIdAccess!=null);
             int weight = Integer.parseInt(editor.getText().toString());
             int rowId = Integer.parseInt(rowIdAccess.getText().toString());
             ((MainActivity)mainActivity).saveListener.enqueueUpdate(rowId, weight);
@@ -59,32 +57,31 @@ public class NumberEnterListener implements View.OnKeyListener {
             ArrayList<String> tables = new ArrayList<String>();
             ArrayList<Integer> rowIds = new ArrayList<Integer>();
             SQLiteDatabase mydatabase = AppWideResourceWrapper.getSqlitedb();
-            Cursor c;
             String dayString = self.getText().toString();
             Integer rawNumber = Integer.parseInt(dayString);
             Integer dayNumber = reduce(rawNumber);
             if (rawNumber != dayNumber) {
                 self.setText(dayNumber.toString());
             }
-            c = mydatabase.rawQuery("SELECT rowid, Title, Sets, RepString, Weight FROM Strength WHERE Day=? ORDER BY Sequence", new String[]{dayNumber.toString()});
+            Cursor c = mydatabase.rawQuery(mainActivity.getString(R.string.strenghQueryByDay), new String[]{dayNumber.toString()});
             if (c.moveToFirst()) {
                 for (String s : MainActivity.initialList) {
                     tables.add(s);
                 }
                 while (!c.isAfterLast()) {
-                    tables.add(c.getString(c.getColumnIndex("Title")));
-                    tables.add(c.getString(c.getColumnIndex("Sets")));
-                    tables.add(c.getString(c.getColumnIndex("RepString")));
-                    String weight = c.getString(c.getColumnIndex("Weight"));
+                    tables.add(c.getString(c.getColumnIndex(mainActivity.getString(R.string.header_title))));
+                    tables.add(c.getString(c.getColumnIndex(mainActivity.getString(R.string.header_sets))));
+                    tables.add(c.getString(c.getColumnIndex(mainActivity.getString(R.string.header_repstring))));
+                    String weight = c.getString(c.getColumnIndex(mainActivity.getString(R.string.header_weight)));
                     if (weight == null) {
-                        weight = "0";
+                        weight = mainActivity.getString(R.string.zero);
                     }
                     tables.add(weight);
-                    rowIds.add(c.getInt(c.getColumnIndex("rowid")));
+                    rowIds.add(c.getInt(c.getColumnIndex(mainActivity.getString(R.string.header_rowid))));
                     c.moveToNext();
                 }
             } else {
-                tables.add("Rest day");
+                tables.add(mainActivity.getString(R.string.rest));
             }
             ((MainActivity) mainActivity).setGridView(tables, rowIds);
             ((MainActivity) mainActivity).hideKeyboard(mainActivity);
