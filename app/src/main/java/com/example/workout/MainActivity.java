@@ -89,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
         highLevelView.setOnClickListener(new View.OnClickListener() {public void onClick(View v) { Intent intent = new Intent(context, HighLevelView.class); startActivity(intent); }});
 
         final Button saveChanges = (Button) findViewById(R.id.saveChanges);
-        saveChanges.setOnClickListener(new SaveButtonClickListener(saveChanges));
+        saveListener = new SaveButtonClickListener(saveChanges);
+        saveChanges.setOnClickListener(saveListener);
 
         Button prevDay = findViewById(R.id.prevDay);
         prevDay.setOnClickListener(new View.OnClickListener() {
