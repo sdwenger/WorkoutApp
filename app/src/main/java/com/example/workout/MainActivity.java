@@ -77,13 +77,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void setGridView(String[] workoutList) {
-        /*ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.listitem, workoutList) {
-            public View getView(int position, View convertView, ViewGroup parent) {
-                return convertView;
+        final int numberOfCells = workoutList.length;
+
+        Rule<Integer> layouts = new Rule<Integer>() {
+            @Override
+            public Integer getIndex(int position) {
+                return (position%4==3&&position!=3)?R.layout.listitementernumber:R.layout.listitem;
             }
-        };*/
-        TableAdapter adapter = new TableAdapter();
+
+            @Override
+            public int getSize() {
+                return numberOfCells;
+            }
+        };
+        TableAdapter adapter = new TableAdapter(new CustomList<Integer>(layouts), new CustomList<String>(workoutList), this);
 
         GridView gridView = (GridView) findViewById(R.id.workoutGrid);
         gridView.setAdapter(adapter);
