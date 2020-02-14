@@ -22,7 +22,7 @@
         android:id="@+id/workoutGrid"
         android:layout_width="414dp"
         android:layout_height="wrap_content"
-        android:numColumns="3"
+        android:numColumns="4"
         android:columnWidth="@android:dimen/thumbnail_width"
         android:stretchMode="columnWidth"
         android:verticalSpacing="20dp"
@@ -43,5 +43,18 @@
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/saveChanges"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Changes"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.82"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.959" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
