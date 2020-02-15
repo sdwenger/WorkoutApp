@@ -83,9 +83,12 @@ public class NumberEnterListener implements View.OnKeyListener {
             } else {
                 tables.add(mainActivity.getString(R.string.rest));
             }
-            ((MainActivity)mainActivity).saveListener.clearQueue();
-            ((MainActivity) mainActivity).setGridView(tables, rowIds);
-            ((MainActivity) mainActivity).hideKeyboard(mainActivity);
+            MainActivity asMain = ((MainActivity)mainActivity);
+            if (asMain.saveListener != null) {
+                asMain.saveListener.clearQueue();
+            }
+            asMain.setGridView(tables, rowIds);
+            asMain.hideKeyboard(mainActivity);
             return true;
         }
         else {
