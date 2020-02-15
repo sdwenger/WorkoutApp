@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
             staticGetString(R.string.header_reps),
             staticGetString(R.string.header_weight)
     };
-    SaveButtonClickListener saveListener;
+    SaveButtonClickListener saveListener = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
