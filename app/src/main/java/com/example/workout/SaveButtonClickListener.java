@@ -22,12 +22,17 @@ public class SaveButtonClickListener implements View.OnClickListener {
         return old;
     }
 
+    public void clearQueue() {
+        updates.clear();
+        saveButton.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     public void onClick(View v) {
         Set<Integer> ids = new HashSet<Integer>();
         ids.addAll(updates.keySet());
         for (Integer id: ids) {
-            Integer weight = updates.get(id);
+            Integer weight = updates.remove(id);
             AppWideResourceWrapper.getSqlitedb().execSQL(AppWideResourceWrapper.getGlobalContext().getString(R.string.updateWeightQuery), new Object[]{weight, id});
         }
         saveButton.setVisibility(View.INVISIBLE);

@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -107,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ((MainActivity)context).incrementEditText(edittext, -1, 28);
+                dayNumberListener.onKey(findViewById(R.id.content), KeyEvent.KEYCODE_ENTER, (new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER)));
             }
         });
 
@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ((MainActivity)context).incrementEditText(edittext, 1, 1);
+                dayNumberListener.onKey(findViewById(R.id.content), KeyEvent.KEYCODE_ENTER, (new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER)));
             }
         });
     }
@@ -173,8 +174,6 @@ public class MainActivity extends AppCompatActivity {
             after = before + incValue;
         }
         target.setText(Integer.toString(after));
-        BaseInputConnection inputConnection = new BaseInputConnection(target, true);
-        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
     }
 
     public static void hideKeyboard(Activity activity) {
