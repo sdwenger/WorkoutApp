@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -47,7 +49,15 @@ public class MainActivity extends AppCompatActivity {
             mydatabase = openOrCreateDatabase(getString(R.string.table_workout), MODE_PRIVATE, null);
             AppWideResourceWrapper.setSqlitedb(mydatabase);
         }
-        if (false) {
+        boolean upToDate = false;
+        try {
+            Cursor c = mydatabase.rawQuery(getString(R.string.versionQuery), new String[]{});
+            if (c.moveToFirst()) {
+                String version = c.getString(c.getColumnIndex(getString(R.string.header_val)));
+                upToDate = getString(R.string.version_number).equals(version);
+            }
+        } catch (SQLiteException e) {}
+        if (!upToDate) {
             InputStream sqlStream = null;
             BufferedReader sqlReader = null;
             StringWriter writer = null;

@@ -1,5 +1,8 @@
+DROP TABLE IF EXISTS Metadata;
 DROP TABLE IF EXISTS DayThemes;
 DROP TABLE IF EXISTS Strength;
+CREATE TABLE IF NOT EXISTS Metadata (Name VARCHAR(16), Val VARCHAR(16));
+INSERT INTO Metadata (Name, Val) VALUES ('Version', '1.1');
 CREATE TABLE IF NOT EXISTS DayThemes (Day INT, Theme VARCHAR(22));
 INSERT INTO DayThemes (Day, Theme) VALUES (1, 'Full Body');
 INSERT INTO DayThemes (Day, Theme) VALUES (2, 'Rest');
