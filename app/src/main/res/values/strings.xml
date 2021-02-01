@@ -21,7 +21,7 @@
     <string name="lt">&lt;</string>
     <string name="gt">&gt;</string>
     <string name="strenghQueryByDay">SELECT rowid, Title, Sets, RepString, Weight FROM Strength WHERE Day=? ORDER BY Sequence</string>
-    <string name="dayThemeQuery">SELECT Day, Theme FROM DayThemes ORDER BY Day</string>
+    <string name="dayThemeQuery">SELECT Day, Theme, (((Day-1)%7)*4)+((Day-1)/7)+1 AS Position FROM DayThemes ORDER BY Position</string>
     <string name="updateWeightQuery">UPDATE Strength SET Weight=? WHERE rowid=?</string>
     <string name="versionQuery">SELECT Val FROM Metadata WHERE Name=\'Version\'</string>
     <string name="button_view_details">View Details</string>
