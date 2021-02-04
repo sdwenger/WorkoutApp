@@ -92,7 +92,7 @@ class DatabaseUpdater extends Thread {
                     Integer sequence = key % 1000;
                     ContentValues content = new ContentValues();
                     content.put(AppWideResourceWrapper.staticGetString(R.string.header_weight), oldData.get(key));
-                    mydatabase.update(AppWideResourceWrapper.staticGetString(R.string.table_strength), content, "Day=? AND Sequence=?", new String[]{day.toString(), sequence.toString()});
+                    mydatabase.update(AppWideResourceWrapper.staticGetString(R.string.table_strength), content, AppWideResourceWrapper.staticGetString(R.string.whereClauseOnVersionUpdate), new String[]{day.toString(), sequence.toString()});
                 }
                 c.close();
             } catch (IOException e) {
