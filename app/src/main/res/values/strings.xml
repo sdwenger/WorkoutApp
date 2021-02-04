@@ -1,6 +1,9 @@
 <resources>
+    <string name="preferencesFile">com.example.workout.preferences</string>
+    <string name="startDateKey">Start Date</string>
+    <string name="requireGlobalContextMessage">Need global context to set shared preferences</string>
     <string name="app_name">Workout</string>
-    <string name="version_number">1.1</string>
+    <string name="version_number">1.2</string>
     <string name="title_activity_high_level_view">HighLevelView</string>
     <string name="header_title">Title</string>
     <string name="header_sets">Sets</string>
@@ -27,4 +30,10 @@
     <string name="button_view_details">View Details</string>
     <string name="button_view_all">All</string>
     <string name="button_save">Save Changes</string>
+    <string name="title_activity_set_start_date">SetStartDateActivity</string>
+    <string name="startDateLabel">Start Date</string>
+    <string name="setStartDateButton">Set Start Date</string>
+    <string name="button_save_date">Save</string>
+    <string name="button_reset_date">Revert</string>
+    <string name="button_return_date">Return</string>
 </resources>
