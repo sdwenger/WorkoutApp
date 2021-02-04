@@ -3,12 +3,17 @@ package com.example.workout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.os.Debug;
+import android.os.Looper;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,15 +27,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     static String [] initialList = {
-            staticGetString(R.string.header_title),
-            staticGetString(R.string.header_sets),
-            staticGetString(R.string.header_reps),
-            staticGetString(R.string.header_weight)
+            AppWideResourceWrapper.staticGetString(R.string.header_title),
+            AppWideResourceWrapper.staticGetString(R.string.header_sets),
+            AppWideResourceWrapper.staticGetString(R.string.header_reps),
+            AppWideResourceWrapper.staticGetString(R.string.header_weight)
     };
     SaveButtonClickListener saveListener = null;
 
@@ -41,47 +48,10 @@ public class MainActivity extends AppCompatActivity {
         final Context context = this;
         final NumberEnterListener dayNumberListener = new NumberEnterListener(this, NumberEnterListener.NumberContext.DAYNUMBER);
 
-        SQLiteDatabase mydatabase;
-        if (AppWideResourceWrapper.sqlitedbIsSet()) {
-            mydatabase = AppWideResourceWrapper.getSqlitedb();
-        } else {
-            mydatabase = openOrCreateDatabase(getString(R.string.table_workout), MODE_PRIVATE, null);
-            AppWideResourceWrapper.setSqlitedb(mydatabase);
-        }
-        boolean upToDate = false;
-        try {
-            Cursor c = mydatabase.rawQuery(getString(R.string.versionQuery), new String[]{});
-            if (c.moveToFirst()) {
-                String version = c.getString(c.getColumnIndex(getString(R.string.header_val)));
-                upToDate = getString(R.string.version_number).equals(version);
-            }
-        } catch (SQLiteException e) {}
-        if (!upToDate) {
-            InputStream sqlStream = null;
-            BufferedReader sqlReader = null;
-            StringWriter writer = null;
-            try {
-                sqlStream = context.getResources().openRawResource(R.raw.workouts);
-                sqlReader = new BufferedReader(new InputStreamReader(sqlStream, getString(R.string.charSetUTF8)));
-                writer = new StringWriter();
-                char[] buffer = new char[2048];
-                int n;
-                while ((n = sqlReader.read(buffer)) != -1) {
-                    writer.write(buffer, 0, n);
-                }
-                String rawSql = writer.toString();
-                String[] dbSetup = rawSql.split(getString(R.string.newline));
-                for (String s: dbSetup) {
-                    mydatabase.execSQL(s);
-                }
-                sqlStream.close();
-                sqlReader.close();
-                writer.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } finally {
-            }
-        }
+        final SQLiteDatabase mydatabase = AppWideResourceWrapper.getSqlitedb();
+
+        DatabaseUpdater db = DatabaseUpdater.getInstance(mydatabase);
+        db.start();
 
         final EditText edittext = (EditText) findViewById(R.id.myNumber);
         edittext.setOnKeyListener(dayNumberListener);
@@ -114,49 +84,58 @@ public class MainActivity extends AppCompatActivity {
         nextDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)context).incrementEditText(edittext, 1, 1);
+                ((MainActivity) context).incrementEditText(edittext, 1, 1);
                 dayNumberListener.onKey(findViewById(R.id.content), KeyEvent.KEYCODE_ENTER, (new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER)));
             }
         });
     }
 
-    public static String staticGetString(int locator) {
-        return AppWideResourceWrapper.getGlobalContext().getString(locator);
-    }
-
-    protected void setGridView(String[] workoutList, final Integer[] rowIds) {
+    protected void setGridView(final String[] workoutList, final Integer[] rowIds) {
         final int numberOfCells = workoutList.length;
+        final MainActivity context = this;
 
-        Rule<Integer> layouts = new Rule<Integer>() {
+        Thread setView = new Thread() {
             @Override
-            public Integer getIndex(int position) {
-                return (position%4==3&&position!=3)?R.layout.listitementernumber:R.layout.listitem;
-            }
+            public void run() {
+                Looper.prepare();
+                Rule<Integer> layouts = new Rule<Integer>() {
+                    @Override
+                    public Integer getIndex(int position) {
+                        return (position%4==3&&position!=3)?R.layout.listitementernumber:R.layout.listitem;
+                    }
 
-            @Override
-            public int getSize() {
-                return numberOfCells;
+                    @Override
+                    public int getSize() {
+                        return numberOfCells;
+                    }
+                };
+                Rule<Integer> rowIdRule = new Rule<Integer>() {
+                    @Override
+                    public Integer getIndex(int position) {
+                        if (position < 4) {
+                            return 0;
+                        }
+                        int rowNumber = (position/4)-1;
+                        return rowIds[rowNumber];
+                    }
+
+                    @Override
+                    public int getSize() {
+                        return numberOfCells;
+                    }
+                };
+                final TableAdapter adapter = new TableAdapter(new CustomList<Integer>(layouts), new CustomList<String>(workoutList), new CustomList<Integer>(rowIdRule), context);
+
+                runOnUiThread(new Thread() {
+                    @Override
+                    public void run() {
+                        GridView gridView = (GridView) findViewById(R.id.workoutGrid);
+                        gridView.setAdapter(adapter);
+                    }
+                });
             }
         };
-        Rule<Integer> rowIdRule = new Rule<Integer>() {
-            @Override
-            public Integer getIndex(int position) {
-                if (position < 4) {
-                    return 0;
-                }
-                int rowNumber = (position/4)-1;
-                return rowIds[rowNumber];
-            }
-
-            @Override
-            public int getSize() {
-                return numberOfCells;
-            }
-        };
-        TableAdapter adapter = new TableAdapter(new CustomList<Integer>(layouts), new CustomList<String>(workoutList), new CustomList<Integer>(rowIdRule), this);
-
-        GridView gridView = (GridView) findViewById(R.id.workoutGrid);
-        gridView.setAdapter(adapter);
+        setView.start();
     }
 
     protected void setGridView(ArrayList<String> workoutList, ArrayList<Integer> rowIds) {
