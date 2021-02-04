@@ -28,6 +28,8 @@
     <string name="strenghQueryByDay">SELECT rowid, Title, Sets, RepString, Weight FROM Strength WHERE Day=? ORDER BY Sequence</string>
     <string name="dayThemeQuery">SELECT Day, Theme, (((Day-1)%7)*4)+((Day-1)/7)+1 AS Position FROM DayThemes ORDER BY Position</string>
     <string name="updateWeightQuery">UPDATE Strength SET Weight=? WHERE rowid=?</string>
+    <string name="strengthQueryToSaveData">SELECT Day, Sequence, Weight FROM Strength</string>
+    <string name="createStrengthIfNotExists">CREATE TABLE IF NOT EXISTS Strength (Day INT, Sequence INT, Title VARCHAR(40), Sets INT, RepString VARCHAR(20), Weight INT);</string>
     <string name="versionQuery">SELECT Val FROM Metadata WHERE Name=\'Version\'</string>
     <string name="button_view_details">View Details</string>
     <string name="button_view_all">All</string>

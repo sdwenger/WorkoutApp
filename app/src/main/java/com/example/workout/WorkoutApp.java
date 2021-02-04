@@ -60,8 +60,8 @@ class DatabaseUpdater extends Thread {
             BufferedReader sqlReader = null;
             StringWriter writer = null;
             try {
-                mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Strength (Day INT, Sequence INT, Title VARCHAR(40), Sets INT, RepString VARCHAR(20), Weight INT);");
-                Cursor c = mydatabase.rawQuery("SELECT Day, Sequence, Weight FROM Strength", new String[]{});
+                mydatabase.execSQL(AppWideResourceWrapper.staticGetString(R.string.createStrengthIfNotExists));
+                Cursor c = mydatabase.rawQuery(AppWideResourceWrapper.staticGetString(R.string.strengthQueryToSaveData), new String[]{});
                 Map<Integer, Integer> oldData = new HashMap<Integer, Integer>();
                 if (c.moveToFirst()) {
                     do {
