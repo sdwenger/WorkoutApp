@@ -50,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
         final SQLiteDatabase mydatabase = AppWideResourceWrapper.getSqlitedb();
 
-        DatabaseUpdater db = DatabaseUpdater.getInstance(mydatabase);
-        db.start();
-
         final EditText edittext = (EditText) findViewById(R.id.myNumber);
         edittext.setOnKeyListener(dayNumberListener);
 
