@@ -1,20 +1,24 @@
 package com.example.workout;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.TimeZone;
 
 public class AppWideResourceWrapper {
     private static SQLiteDatabase sqlitedb = null;
     private static Context globalContext = null;
+    private static Date startDate = null;
+    private static SharedPreferences appPreferences = null;
 
     public static SQLiteDatabase getSqlitedb() {
         return sqlitedb;
@@ -38,6 +42,50 @@ public class AppWideResourceWrapper {
 
     public static boolean globalContextIsSet() {
         return globalContext!=null;
+    }
+
+    private static void setSharedPreferences() {
+        if (globalContext == null) {
+            throw new IllegalArgumentException(globalContext.getString(R.string.requireGlobalContextMessage));
+        }
+        appPreferences = globalContext.getSharedPreferences(globalContext.getString(R.string.preferencesFile), globalContext.MODE_PRIVATE);
+    }
+
+    public static void addSharedPreferencesListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        appPreferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public static Date retrieveStartDate() {
+        if (startDate == null) {
+            if (appPreferences == null) {
+                setSharedPreferences();
+            }
+            long startDateLong = appPreferences.getLong(globalContext.getString(R.string.startDateKey), (new Date().getTime()))-timeZoneDelta();
+            startDateLong -= startDateLong%(86400L*1000L);
+            startDate = new Date(startDateLong);
+        }
+        return startDate;
+    }
+
+    public static void setStartDate(Date date, boolean commit) {
+        if (date != null) {
+            startDate = date;
+        }
+        if (commit) {
+            long milliseconds = startDate.getTime();
+            SharedPreferences.Editor editor = appPreferences.edit();
+            editor.putLong(globalContext.getString(R.string.startDateKey), milliseconds);
+            editor.apply();
+        }
+    }
+
+    public static long timeZoneDelta() {
+        TimeZone tz = TimeZone.getDefault();
+        return tz.getRawOffset();
+    }
+
+    public static String staticGetString(int locator) {
+        return globalContext.getString(locator);
     }
 }
 
