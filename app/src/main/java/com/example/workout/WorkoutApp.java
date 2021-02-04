@@ -46,16 +46,9 @@ class DatabaseUpdater extends Thread {
     }
 
     public void run() {
-        boolean upToDate = false;
-        try {
-            Cursor c = mydatabase.rawQuery(AppWideResourceWrapper.staticGetString(R.string.versionQuery), new String[]{});
-            if (c.moveToFirst()) {
-                String version = c.getString(c.getColumnIndex(AppWideResourceWrapper.staticGetString(R.string.header_val)));
-                upToDate = AppWideResourceWrapper.staticGetString(R.string.version_number).equals(version);
-            }
-        } catch (SQLiteException e) {
-        }
+        boolean upToDate = AppWideResourceWrapper.staticGetString(R.string.version_number).equals(AppWideResourceWrapper.getVersionString());
         if (!upToDate) {
+            AppWideResourceWrapper.writebackVersionString();
             InputStream sqlStream = null;
             BufferedReader sqlReader = null;
             StringWriter writer = null;

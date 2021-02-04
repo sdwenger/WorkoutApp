@@ -38,6 +38,7 @@
     <string name="startDateLabel">Start Date</string>
     <string name="setStartDateButton">Set Start Date</string>
     <string name="whereClauseOnVersionUpdate">Day=? AND Sequence=?</string>
+    <string name="version_key">Version Number</string>
     <string name="button_save_date">Save</string>
     <string name="button_reset_date">Revert</string>
     <string name="button_return_date">Return</string>

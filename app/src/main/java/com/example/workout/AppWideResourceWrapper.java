@@ -19,6 +19,7 @@ public class AppWideResourceWrapper {
     private static Context globalContext = null;
     private static Date startDate = null;
     private static SharedPreferences appPreferences = null;
+    private static String versionString = null;
 
     public static SQLiteDatabase getSqlitedb() {
         return sqlitedb;
@@ -49,6 +50,23 @@ public class AppWideResourceWrapper {
             throw new IllegalArgumentException(globalContext.getString(R.string.requireGlobalContextMessage));
         }
         appPreferences = globalContext.getSharedPreferences(globalContext.getString(R.string.preferencesFile), globalContext.MODE_PRIVATE);
+    }
+
+    public static String getVersionString() {
+        if (versionString == null) {
+            if (appPreferences == null) {
+                setSharedPreferences();
+            }
+            versionString = appPreferences.getString(globalContext.getString(R.string.version_key), null);
+        }
+        return versionString;
+    }
+
+    public static void writebackVersionString() {
+        String versionString = AppWideResourceWrapper.staticGetString(R.string.version_number);
+        SharedPreferences.Editor editor = appPreferences.edit();
+        editor.putString(AppWideResourceWrapper.staticGetString(R.string.version_key), versionString);
+        editor.apply();
     }
 
     public static void addSharedPreferencesListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
