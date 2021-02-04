@@ -55,6 +55,8 @@ public class SetStartDateActivity extends AppCompatActivity {
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cal.setTime(getCurrentStartDate());
+                startDatePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
                 finish();
             }
         });
