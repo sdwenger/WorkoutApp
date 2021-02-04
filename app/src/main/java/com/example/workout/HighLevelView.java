@@ -28,9 +28,25 @@ public class HighLevelView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final HighLevelView outercontext = this;
         setContentView(R.layout.activity_high_level_view);
         HighLevelInitViewThread thread = new HighLevelInitViewThread(this);
-        thread.run();
+        thread.start();
+        final Button highLevelView = findViewById(R.id.jumpToDetails);
+        highLevelView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(outercontext, MainActivity.class);
+                outercontext.startActivity(intent);
+                outercontext.finish();
+            }
+        });
+        final Button setStartDateActivity = findViewById(R.id.setStartDateButton);
+        setStartDateActivity.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(outercontext, SetStartDateActivity.class);
+                outercontext.startActivity(intent);
+            }
+        });
     }
 }
 
@@ -56,35 +72,24 @@ class HighLevelInitViewThread extends Thread {
             } while (c.moveToNext());
         }
 
-        HighLevelAdapter adapter = new HighLevelAdapter(dayNumbers, themes, parent);
+        final HighLevelAdapter adapter = new HighLevelAdapter(dayNumbers, themes, parent);
 
-        parent.gridView = (GridView) parent.findViewById(R.id.themeGrid);
-        parent.gridView.setAdapter(adapter);
-        parent.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(outercontext, MainActivity.class);
-                int dayNumber = Integer.valueOf(((TextView) view.findViewById(R.id.hiddenInfo)).getText().toString());
-                intent.putExtra(AppWideResourceWrapper.staticGetString(R.string.clickedDayExtra), dayNumber);
-                outercontext.startActivity(intent);
-                outercontext.finish();
-            }
-        });
-
-        final Button highLevelView = parent.findViewById(R.id.jumpToDetails);
-        highLevelView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(outercontext, MainActivity.class);
-                outercontext.startActivity(intent);
-                outercontext.finish();
-            }
-        });
-        final Button setStartDateActivity = parent.findViewById(R.id.setStartDateButton);
-        setStartDateActivity.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(outercontext, SetStartDateActivity.class);
-                outercontext.startActivity(intent);
-            }
+        parent.runOnUiThread(new Runnable() {
+             @Override
+             public void run() {
+                 outercontext.gridView = (GridView) outercontext.findViewById(R.id.themeGrid);
+                 outercontext.gridView.setAdapter(adapter);
+                 outercontext.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                     @Override
+                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                         Intent intent = new Intent(outercontext, MainActivity.class);
+                         int dayNumber = Integer.valueOf(((TextView) view.findViewById(R.id.hiddenInfo)).getText().toString());
+                         intent.putExtra(AppWideResourceWrapper.staticGetString(R.string.clickedDayExtra), dayNumber);
+                         outercontext.startActivity(intent);
+                         outercontext.finish();
+                     }
+                 });
+             }
         });
     }
 }
