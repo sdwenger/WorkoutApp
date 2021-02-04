@@ -55,8 +55,16 @@ public class HighLevelView extends AppCompatActivity {
         final Button highLevelView = (Button) findViewById(R.id.jumpToDetails);
         highLevelView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent(outercontext, MainActivity.class);
+                outercontext.startActivity(intent);
+                outercontext.finish();
+            }
+        });
+        final Button setStartDateActivity = parent.findViewById(R.id.setStartDateButton);
+        setStartDateActivity.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(outercontext, SetStartDateActivity.class);
+                outercontext.startActivity(intent);
             }
         });
     }
