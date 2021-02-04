@@ -27,15 +27,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     static String [] initialList = {
-            staticGetString(R.string.header_title),
-            staticGetString(R.string.header_sets),
-            staticGetString(R.string.header_reps),
-            staticGetString(R.string.header_weight)
+            AppWideResourceWrapper.staticGetString(R.string.header_title),
+            AppWideResourceWrapper.staticGetString(R.string.header_sets),
+            AppWideResourceWrapper.staticGetString(R.string.header_reps),
+            AppWideResourceWrapper.staticGetString(R.string.header_weight)
     };
     SaveButtonClickListener saveListener = null;
 
