@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class WorkoutApp extends Application {
         if (!AppWideResourceWrapper.globalContextIsSet()) {
             AppWideResourceWrapper.setGlobalContext(this);
         }
-        SQLiteDatabase mydatabase = openOrCreateDatabase(getString(R.string.table_workout), MODE_PRIVATE, null);
+        SQLiteDatabase mydatabase = openOrCreateDatabase(getString(R.string.database_workout), MODE_PRIVATE, null);
         AppWideResourceWrapper.setSqlitedb(mydatabase);
 
         DatabaseUpdater updater = DatabaseUpdater.getInstance(mydatabase);
@@ -66,8 +65,9 @@ class DatabaseUpdater extends Thread {
                 Map<Integer, Integer> oldData = new HashMap<Integer, Integer>();
                 if (c.moveToFirst()) {
                     do {
-                        Integer key = c.getInt(c.getColumnIndex("Day")) * 1000 + c.getInt(c.getColumnIndex("Sequence"));
-                        Integer value = c.getInt(c.getColumnIndex("Weight"));
+                        Integer key = c.getInt(c.getColumnIndex(AppWideResourceWrapper.staticGetString(R.string.header_day)))*1000
+                                + c.getInt(c.getColumnIndex(AppWideResourceWrapper.staticGetString(R.string.header_sequence)));
+                        Integer value = c.getInt(c.getColumnIndex(AppWideResourceWrapper.staticGetString(R.string.header_weight)));
                         oldData.put(key, value);
                     } while (c.moveToNext());
                 }
@@ -88,12 +88,11 @@ class DatabaseUpdater extends Thread {
                 sqlReader.close();
                 writer.close();
                 for (Integer key : oldData.keySet()) {
-                    Log.w("key", key + ":" + oldData.get(key));
                     Integer day = key / 1000;
                     Integer sequence = key % 1000;
                     ContentValues content = new ContentValues();
-                    content.put("Weight", oldData.get(key));
-                    mydatabase.update("Strength", content, "Day=? AND Sequence=?", new String[]{day.toString(), sequence.toString()});
+                    content.put(AppWideResourceWrapper.staticGetString(R.string.header_weight), oldData.get(key));
+                    mydatabase.update(AppWideResourceWrapper.staticGetString(R.string.table_strength), content, "Day=? AND Sequence=?", new String[]{day.toString(), sequence.toString()});
                 }
                 c.close();
             } catch (IOException e) {
