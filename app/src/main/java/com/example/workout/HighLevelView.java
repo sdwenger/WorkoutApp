@@ -13,51 +13,83 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListAdapter;
+import android.widget.TextView;
 
+import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HighLevelView extends AppCompatActivity {
+
+    GridView gridView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final HighLevelView outercontext = this;
         setContentView(R.layout.activity_high_level_view);
-        Cursor c;
-        SQLiteDatabase mydatabase;
-        if (AppWideResourceWrapper.sqlitedbIsSet()) {
-            mydatabase = AppWideResourceWrapper.getSqlitedb();
-        } else {
-            mydatabase = openOrCreateDatabase(getString(R.string.table_workout), MODE_PRIVATE, null);
-            AppWideResourceWrapper.setSqlitedb(mydatabase);
-        }
-        ArrayList<String> data = new ArrayList<String>(28);
-        final Context context = this;
-        c = mydatabase.rawQuery(getString(R.string.dayThemeQuery), null);
+        HighLevelInitViewThread thread = new HighLevelInitViewThread(this);
+        thread.start();
+        final Button highLevelView = findViewById(R.id.jumpToDetails);
+        highLevelView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(outercontext, MainActivity.class);
+                outercontext.startActivity(intent);
+                outercontext.finish();
+            }
+        });
+        final Button setStartDateActivity = findViewById(R.id.setStartDateButton);
+        setStartDateActivity.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(outercontext, SetStartDateActivity.class);
+                outercontext.startActivity(intent);
+            }
+        });
+    }
+}
+
+class HighLevelInitViewThread extends Thread {
+
+    private HighLevelView parent = null;
+
+    public HighLevelInitViewThread(HighLevelView parent) {
+        this.parent = parent;
+    }
+
+    public void run() {
+        final HighLevelView outercontext = this.parent;
+        Cursor c = AppWideResourceWrapper.getSqlitedb().rawQuery(AppWideResourceWrapper.staticGetString(R.string.dayThemeQuery), null);
+        List<Integer> dayNumbers = new ArrayList<Integer>(28);
+        List<String> themes = new ArrayList<String>(28);
         if (c.moveToFirst()) {
             do {
-                data.add(c.getString(c.getColumnIndex(getString(R.string.header_day))) + getString(R.string.dotspace) + c.getString(c.getColumnIndex(getString(R.string.header_theme))));
+                Integer dayNumber = c.getInt(c.getColumnIndex(AppWideResourceWrapper.staticGetString(R.string.header_day)));
+                String theme = c.getString(c.getColumnIndex(AppWideResourceWrapper.staticGetString(R.string.header_theme)));
+                dayNumbers.add(dayNumber);
+                themes.add(theme);
             } while (c.moveToNext());
         }
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.listitem, data);
+        final HighLevelAdapter adapter = new HighLevelAdapter(dayNumbers, themes, parent);
 
-        GridView gridView = (GridView) findViewById(R.id.themeGrid);
-        gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra(getString(R.string.clickedDayExtra), position+1);
-                startActivity(intent);
-            }
-        });
-        final Button highLevelView = (Button) findViewById(R.id.jumpToDetails);
-        highLevelView.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivity(intent);
-            }
+        parent.runOnUiThread(new Runnable() {
+             @Override
+             public void run() {
+                 outercontext.gridView = (GridView) outercontext.findViewById(R.id.themeGrid);
+                 outercontext.gridView.setAdapter(adapter);
+                 outercontext.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                     @Override
+                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                         Intent intent = new Intent(outercontext, MainActivity.class);
+                         int dayNumber = Integer.valueOf(((TextView) view.findViewById(R.id.hiddenInfo)).getText().toString());
+                         intent.putExtra(AppWideResourceWrapper.staticGetString(R.string.clickedDayExtra), dayNumber);
+                         outercontext.startActivity(intent);
+                         outercontext.finish();
+                     }
+                 });
+             }
         });
     }
 }

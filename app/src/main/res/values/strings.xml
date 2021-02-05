@@ -1,6 +1,9 @@
 <resources>
+    <string name="preferencesFile">com.example.workout.preferences</string>
+    <string name="startDateKey">Start Date</string>
+    <string name="requireGlobalContextMessage">Need global context to set shared preferences</string>
     <string name="app_name">Workout</string>
-    <string name="version_number">1.1</string>
+    <string name="version_number">1.2</string>
     <string name="title_activity_high_level_view">HighLevelView</string>
     <string name="header_title">Title</string>
     <string name="header_sets">Sets</string>
@@ -9,11 +12,13 @@
     <string name="header_weight">Weight</string>
     <string name="header_rowid">rowid</string>
     <string name="header_day">Day</string>
+    <string name="header_sequence">Sequence</string>
     <string name="header_theme">Theme</string>
+    <string name="table_strength">Strength</string>
     <string name="header_val">Val</string>
     <string name="charSetUTF8">UTF-8</string>
     <string name="clickedDayExtra">CLICKED_DAY</string>
-    <string name="table_workout">Workout</string>
+    <string name="database_workout">Workout</string>
     <string name="rest">Rest day</string>
     <string name="newline">\n</string>
     <string name="zero">0</string>
@@ -21,10 +26,20 @@
     <string name="lt">&lt;</string>
     <string name="gt">&gt;</string>
     <string name="strenghQueryByDay">SELECT rowid, Title, Sets, RepString, Weight FROM Strength WHERE Day=? ORDER BY Sequence</string>
-    <string name="dayThemeQuery">SELECT Day, Theme FROM DayThemes ORDER BY Day</string>
+    <string name="dayThemeQuery">SELECT Day, Theme, (((Day-1)%7)*4)+((Day-1)/7)+1 AS Position FROM DayThemes ORDER BY Position</string>
     <string name="updateWeightQuery">UPDATE Strength SET Weight=? WHERE rowid=?</string>
+    <string name="strengthQueryToSaveData">SELECT Day, Sequence, Weight FROM Strength</string>
+    <string name="createStrengthIfNotExists">CREATE TABLE IF NOT EXISTS Strength (Day INT, Sequence INT, Title VARCHAR(40), Sets INT, RepString VARCHAR(20), Weight INT);</string>
     <string name="versionQuery">SELECT Val FROM Metadata WHERE Name=\'Version\'</string>
     <string name="button_view_details">View Details</string>
     <string name="button_view_all">All</string>
     <string name="button_save">Save Changes</string>
+    <string name="title_activity_set_start_date">SetStartDateActivity</string>
+    <string name="startDateLabel">Start Date</string>
+    <string name="setStartDateButton">Set Start Date</string>
+    <string name="whereClauseOnVersionUpdate">Day=? AND Sequence=?</string>
+    <string name="version_key">Version Number</string>
+    <string name="button_save_date">Save</string>
+    <string name="button_reset_date">Revert</string>
+    <string name="button_return_date">Return</string>
 </resources>

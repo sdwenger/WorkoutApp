@@ -10,10 +10,16 @@
         android:supportsRtl="true"
         android:name="WorkoutApp"
         android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".SetStartDateActivity"
+            android:label="@string/title_activity_set_start_date">
+        </activity>
         <activity
             android:name=".HighLevelView"
             android:label="@string/title_activity_high_level_view"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
